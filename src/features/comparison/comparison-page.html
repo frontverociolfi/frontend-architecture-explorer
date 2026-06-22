@@ -1,0 +1,104 @@
+<section class="comparison-page">
+  <section class="hero" aria-labelledby="comparison-title">
+    <div class="hero__copy">
+      <p class="eyebrow">{{ 'comparisonPage.eyebrow' | translate }}</p>
+      <h1 id="comparison-title">{{ 'comparisonPage.title' | translate }}</h1>
+      <p>{{ 'comparisonPage.description' | translate }}</p>
+    </div>
+  </section>
+
+  <section class="comparison-workspace">
+  <section class="selector-panel" [attr.aria-label]="'comparisonPage.selectorAria' | translate">
+    <div class="selector-heading">
+      <div>
+        <h2>{{ 'comparisonPage.architectures' | translate }}</h2>
+        <p>
+          {{
+            'comparisonPage.selected'
+              | translate: { count: selectedArchitectures().length, max: maxSelection }
+          }}
+        </p>
+      </div>
+      <span>{{ 'comparisonPage.minimum' | translate }}</span>
+    </div>
+
+    <div class="architecture-options">
+      @for (architecture of architectures(); track architecture.id) {
+        <button
+          type="button"
+          [class.selected]="isSelected(architecture)"
+          [disabled]="isDisabled(architecture)"
+          (click)="toggleArchitecture(architecture)"
+        >
+          <span class="option-accent" [style.background]="architecture.accent"></span>
+          <span>
+            <strong>{{ architecture.name }}</strong>
+            <small>{{ architecture.shortDescription }}</small>
+          </span>
+        </button>
+      }
+    </div>
+  </section>
+
+    <div class="comparison-content">
+      @if (!canCompare()) {
+        <section class="empty-state">
+          <h2>{{ 'comparisonPage.emptyTitle' | translate }}</h2>
+          <p>{{ 'comparisonPage.emptyDescription' | translate }}</p>
+        </section>
+      } @else {
+        <section class="summary-grid" [attr.aria-label]="'comparisonPage.summaryAria' | translate">
+          @for (architecture of selectedArchitectures(); track architecture.id) {
+            <article class="summary-card" [style.--accent]="architecture.accent">
+              <div>
+                <p class="summary-label">{{ 'comparisonPage.average' | translate }}</p>
+                <strong>{{ averageScore(architecture) }}/5</strong>
+              </div>
+              <h2>{{ architecture.name }}</h2>
+              <p>{{ architecture.shortDescription }}</p>
+              <a [routerLink]="['/arquiteturas', architecture.id]">
+                {{ 'comparisonPage.openDetail' | translate }}
+              </a>
+            </article>
+          }
+        </section>
+
+        <section
+          class="comparison-matrix"
+          [attr.aria-label]="'comparisonPage.matrixAria' | translate"
+          [style.--selected-count]="selectedArchitectures().length"
+        >
+          <div class="matrix-header">
+            <span>{{ 'comparisonPage.criterion' | translate }}</span>
+            @for (architecture of selectedArchitectures(); track architecture.id) {
+              <strong>{{ architecture.name }}</strong>
+            }
+          </div>
+
+          @for (criterion of criteria(); track criterion.key) {
+            <div class="matrix-row">
+              <div class="criterion">
+                <strong>{{ criterion.label }}</strong>
+                <span>{{ criterion.description }}</span>
+              </div>
+
+              @for (architecture of selectedArchitectures(); track architecture.id) {
+                @let score = scoreFor(architecture, criterion);
+                <article class="score-cell">
+                  <div class="score-heading">
+                    <strong>{{ score.label }}</strong>
+                    <span>{{ score.value }}/5</span>
+                  </div>
+                  <div class="score-bar" aria-hidden="true">
+                    <span [style.width]="scoreWidth(score)"></span>
+                  </div>
+                  <p>{{ score.note }}</p>
+                </article>
+              }
+            </div>
+          }
+        </section>
+      }
+    </div>
+  </section>
+</section>

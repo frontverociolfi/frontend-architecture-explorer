@@ -1,0 +1,196 @@
+<div class="mini-ide" [attr.aria-label]="'miniIde.aria' | translate">
+  <header class="mini-ide__topbar">
+    <div>
+      <p class="section-label">{{ 'miniIde.folderStructure' | translate }}</p>
+      <p class="section-support">
+        {{ 'miniIde.support' | translate }}
+      </p>
+    </div>
+    <span class="mini-ide__badge">{{ architecture().name }}</span>
+  </header>
+
+  <div class="mini-ide__body">
+    <nav class="file-tree" [attr.aria-label]="'miniIde.fileTreeAria' | translate">
+      <div class="file-search">
+        <label for="mini-ide-search-{{ architecture().id }}">{{ 'miniIde.searchLabel' | translate }}</label>
+        <div class="file-search__control">
+          <ng-icon class="search-icon" name="fluentSearch" size="16" aria-hidden="true" />
+          <input
+            id="mini-ide-search-{{ architecture().id }}"
+            type="search"
+            [placeholder]="'miniIde.searchPlaceholder' | translate"
+            [value]="searchTerm()"
+            (input)="updateSearchTerm($event)"
+          />
+          @if (searchTerm()) {
+            <button
+              type="button"
+              [attr.aria-label]="'miniIde.clearSearch' | translate"
+              (click)="clearSearch()"
+            >
+              <ng-icon name="fluentDismiss" size="16" aria-hidden="true" />
+            </button>
+          }
+        </div>
+      </div>
+
+      @if (searchTerm()) {
+        <div class="search-results" [attr.aria-label]="'miniIde.searchResults' | translate">
+          @for (file of searchableFiles(); track file.path) {
+            <button
+              type="button"
+              class="search-result"
+              [class.active]="selectedFile()?.path === file.path"
+              (click)="openItem(file)"
+            >
+              <ng-icon class="search-result__icon" name="fluentDocument" size="16" aria-hidden="true" />
+              <span class="extension-badge">.{{ fileExtension(file) }}</span>
+              <span>
+                <strong>{{ file.name }}</strong>
+                <small>{{ file.path }}</small>
+              </span>
+            </button>
+          } @empty {
+            <p class="search-empty">{{ 'miniIde.noFilesFound' | translate }}</p>
+          }
+        </div>
+      }
+
+      <button
+        type="button"
+        class="tree-row tree-row--root"
+        [class.active]="currentFolderPath() === ''"
+        (click)="openRoot()"
+      >
+        <ng-icon class="tree-row__icon" name="fluentHome" size="16" aria-hidden="true" />
+        <span>{{ 'miniIde.project' | translate }}</span>
+      </button>
+
+      @for (file of architecture().files; track file.path) {
+        @if (file.type === 'folder') {
+          <button
+            type="button"
+            class="tree-row tree-row--folder"
+            [class.active]="currentFolderPath() === file.path"
+            [style.padding-left.px]="14 + file.depth * 16"
+            (click)="openFolder(file)"
+          >
+            <ng-icon class="tree-row__icon" [name]="treeIcon(file)" size="16" aria-hidden="true" />
+            <span>{{ file.name }}</span>
+          </button>
+        } @else {
+          <button
+            type="button"
+            class="tree-row tree-row--file"
+            [class.active]="selectedFile()?.path === file.path"
+            [style.padding-left.px]="14 + file.depth * 16"
+            (click)="openItem(file)"
+          >
+            <ng-icon class="tree-row__icon" [name]="treeIcon(file)" size="16" aria-hidden="true" />
+            <span>{{ file.name }}</span>
+            <span class="extension-badge">.{{ fileExtension(file) }}</span>
+          </button>
+        }
+      }
+    </nav>
+
+    <section class="directory-panel" [attr.aria-label]="'miniIde.directoryAria' | translate">
+      <div class="directory-toolbar">
+        <button
+          type="button"
+          class="back-button"
+          [disabled]="currentFolderPath() === ''"
+          (click)="goBackFolder()"
+        >
+          <ng-icon name="fluentArrowLeft" size="16" aria-hidden="true" />
+          {{ 'miniIde.backFolder' | translate }}
+        </button>
+
+        <nav class="breadcrumbs" [attr.aria-label]="'miniIde.breadcrumbAria' | translate">
+          <button type="button" (click)="openRoot()">{{ 'miniIde.project' | translate }}</button>
+          @for (folder of breadcrumbs(); track folder.path) {
+            <span aria-hidden="true">/</span>
+            <button type="button" (click)="openFolder(folder)">
+              {{ folder.name }}
+            </button>
+          }
+        </nav>
+      </div>
+
+      <div class="directory-list">
+        @for (item of directoryItems(); track item.path) {
+          <button
+            type="button"
+            class="directory-item"
+            [class.directory-item--folder]="item.type === 'folder'"
+            [class.directory-item--file]="item.type === 'file'"
+            [class.active]="selectedFile()?.path === item.path || currentFolderPath() === item.path"
+            (click)="openItem(item)"
+          >
+            <ng-icon
+              class="directory-item__icon"
+              [name]="directoryIcon(item)"
+              size="20"
+              aria-hidden="true"
+            />
+            <span>
+              <strong>{{ item.name }}</strong>
+              <small>{{ fileKind(item) }}</small>
+            </span>
+            @if (item.type === 'file') {
+              <span class="extension-badge">.{{ fileExtension(item) }}</span>
+            }
+          </button>
+        } @empty {
+          <p class="directory-empty">
+            {{ 'miniIde.emptyFolder' | translate }}
+          </p>
+        }
+      </div>
+    </section>
+
+    <section class="code-editor" [attr.aria-label]="'miniIde.editorAria' | translate">
+      <div class="editor-tabs" [attr.aria-label]="'miniIde.tabsAria' | translate">
+        @for (file of openFiles(); track file.path) {
+          <div
+            class="editor-tab"
+            [class.active]="selectedFile()?.path === file.path"
+          >
+            <button type="button" class="editor-tab__select" (click)="openItem(file)">
+              <span class="extension-badge">.{{ fileExtension(file) }}</span>
+              <span>{{ file.name }}</span>
+            </button>
+            <button
+              type="button"
+              class="editor-tab__close"
+              [attr.aria-label]="'miniIde.closeTab' | translate"
+              [disabled]="openFiles().length === 1"
+              (click)="closeTab(file, $event)"
+            >
+              <ng-icon name="fluentDismiss" size="14" aria-hidden="true" />
+            </button>
+          </div>
+        }
+      </div>
+
+      <div class="editor-toolbar">
+        <p>
+          <span>{{ 'miniIde.path' | translate }}</span>
+          <strong>{{ selectedFile()?.path }}</strong>
+        </p>
+        <button type="button" (click)="copySelectedFile()">
+          <ng-icon [name]="copyIcon()" size="16" aria-hidden="true" />
+          @if (copyState() === 'copied') {
+            {{ 'miniIde.copied' | translate }}
+          } @else if (copyState() === 'failed') {
+            {{ 'miniIde.failed' | translate }}
+          } @else {
+            {{ 'miniIde.copy' | translate }}
+          }
+        </button>
+      </div>
+
+      <pre><code>{{ selectedFile()?.content }}</code></pre>
+    </section>
+  </div>
+</div>

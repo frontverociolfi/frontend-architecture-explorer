@@ -1,0 +1,88 @@
+{
+  "id": "domain-driven-frontend",
+  "name": "Domain Driven Frontend",
+  "shortDescription": "Modela o frontend a partir dos domínios do negócio.",
+  "explanation": "Inspirada em DDD, essa abordagem organiza o código por domínios e contextos. Cada domínio preserva sua linguagem, regras, casos de uso e integrações com a interface.",
+  "files": [
+    { "path": "src/app/domains", "name": "domains", "depth": 0, "type": "folder" },
+    { "path": "src/app/domains/customer", "name": "customer", "depth": 1, "type": "folder" },
+    {
+      "path": "src/app/domains/customer/customer.entity.ts",
+      "name": "customer.entity.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "export class Customer {\n  constructor(\n    readonly id: CustomerId,\n    readonly document: TaxDocument,\n  ) {}\n\n  canReceiveInvoice() {\n    return this.document.isValid();\n  }\n}"
+    },
+    {
+      "path": "src/app/domains/customer/customer.use-case.ts",
+      "name": "customer.use-case.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "export class RegisterCustomer {\n  constructor(private gateway: CustomerGateway) {}\n\n  execute(input: RegisterCustomerInput) {\n    const customer = Customer.create(input);\n    return this.gateway.save(customer);\n  }\n}"
+    },
+    { "path": "src/app/domains/customer/ui", "name": "ui", "depth": 2, "type": "folder" },
+    {
+      "path": "src/app/domains/customer/ui/customer-profile.page.ts",
+      "name": "customer-profile.page.ts",
+      "depth": 3,
+      "type": "file",
+      "content": "@Component({ templateUrl: './customer-profile.page.html' })\nexport class CustomerProfilePage {\n  customer = inject(CustomerFacade).current();\n}"
+    },
+    { "path": "src/app/domains/billing", "name": "billing", "depth": 1, "type": "folder" },
+    {
+      "path": "src/app/domains/billing/invoice.entity.ts",
+      "name": "invoice.entity.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "export class Invoice {\n  markAsPaid(payment: Payment) {\n    if (this.isCanceled) throw new Error('Invoice canceled');\n    return { ...this, paidAt: payment.date };\n  }\n}"
+    },
+    {
+      "path": "src/app/domains/billing/billing.facade.ts",
+      "name": "billing.facade.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "@Injectable()\nexport class BillingFacade {\n  overdueInvoices = signal<Invoice[]>([]);\n  pay(invoice: Invoice) { return this.payInvoice.execute(invoice.id); }\n}"
+    },
+    { "path": "src/app/domains/subscription", "name": "subscription", "depth": 1, "type": "folder" },
+    {
+      "path": "src/app/domains/subscription/subscription.policy.ts",
+      "name": "subscription.policy.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "export function canUpgrade(plan: Plan, target: Plan) {\n  return target.price > plan.price && plan.status === 'active';\n}"
+    },
+    { "path": "src/app/shared-kernel", "name": "shared-kernel", "depth": 0, "type": "folder" },
+    {
+      "path": "src/app/shared-kernel/money.ts",
+      "name": "money.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export class Money {\n  constructor(readonly cents: number, readonly currency = 'BRL') {}\n  add(value: Money) { return new Money(this.cents + value.cents, this.currency); }\n}"
+    },
+    { "path": "src/app/platform", "name": "platform", "depth": 0, "type": "folder" }
+  ],
+  "pros": [
+    "Mantém o código próximo da linguagem do negócio.",
+    "Ajuda a lidar com regras complexas e evolução de produto.",
+    "Cria limites claros entre contextos diferentes."
+  ],
+  "cons": [
+    "Pode ser excessiva para sistemas simples.",
+    "Requer bom entendimento do domínio e alinhamento com backend/produto.",
+    "A curva de aprendizado é maior."
+  ],
+  "whenToUse": [
+    "Produtos com regras de negócio ricas ou sensíveis.",
+    "Sistemas que precisam evoluir por domínios independentes.",
+    "Times que já discutem bounded contexts, entidades e casos de uso."
+  ],
+  "realExample": "Uma plataforma financeira com domínios de conta, cobrança, assinatura, risco e compliance.",
+  "exampleScenario": "O domínio `billing` concentra termos como fatura, vencimento, inadimplência e pagamento, enquanto `subscription` cuida de plano, ciclo e renovação.",
+  "implementationHighlights": [
+    "Mapeie contextos de negócio antes de criar pastas.",
+    "Use nomes do domínio nos arquivos, não apenas nomes técnicos.",
+    "Evite dependências diretas entre domínios; quando necessário, crie contratos explícitos."
+  ],
+  "commonPitfall": "Aplicar DDD só como nomes de pasta, sem modelar regras e linguagem do negócio, cria complexidade sem benefício.",
+  "accent": "#0A9396"
+}

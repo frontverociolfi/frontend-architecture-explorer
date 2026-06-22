@@ -1,0 +1,87 @@
+{
+  "id": "microfrontends",
+  "name": "Microfrontends",
+  "shortDescription": "Divide a interface em aplicações independentes.",
+  "explanation": "Microfrontends permitem que partes da experiência sejam desenvolvidas, publicadas e operadas por times diferentes. Normalmente existe um shell que compõe apps remotos.",
+  "files": [
+    { "path": "shell/src/app", "name": "shell", "depth": 0, "type": "folder" },
+    {
+      "path": "shell/src/app/app.routes.ts",
+      "name": "app.routes.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export const routes = [\n  {\n    path: 'checkout',\n    loadChildren: () => loadRemoteModule('checkout', './Routes'),\n  },\n];"
+    },
+    {
+      "path": "shell/src/app/remote-manifest.ts",
+      "name": "remote-manifest.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export const remotes = {\n  catalog: 'https://cdn.example.com/catalog/remoteEntry.js',\n  checkout: 'https://cdn.example.com/checkout/remoteEntry.js',\n};"
+    },
+    { "path": "remotes", "name": "remotes", "depth": 0, "type": "folder" },
+    { "path": "remotes/auth/src/app", "name": "auth", "depth": 1, "type": "folder" },
+    {
+      "path": "remotes/auth/src/app/auth.routes.ts",
+      "name": "auth.routes.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "export default [\n  { path: 'login', loadComponent: () => import('./login.page') },\n  { path: 'callback', loadComponent: () => import('./callback.page') },\n];"
+    },
+    { "path": "remotes/catalog/src/app", "name": "catalog", "depth": 1, "type": "folder" },
+    {
+      "path": "remotes/catalog/src/app/product-list.page.ts",
+      "name": "product-list.page.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "@Component({ templateUrl: './product-list.page.html' })\nexport class ProductListPage {\n  products = inject(CatalogApi).list();\n}"
+    },
+    { "path": "remotes/checkout/src/app", "name": "checkout", "depth": 1, "type": "folder" },
+    {
+      "path": "remotes/checkout/src/app/remote-entry.ts",
+      "name": "remote-entry.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "export const remoteRoutes = [\n  {\n    path: '',\n    loadComponent: () => import('./checkout.page'),\n  },\n];"
+    },
+    {
+      "path": "remotes/checkout/src/app/checkout.page.ts",
+      "name": "checkout.page.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "@Component({ templateUrl: './checkout.page.html' })\nexport class CheckoutPage {\n  submit() { return inject(CheckoutApi).confirm(); }\n}"
+    },
+    { "path": "packages/contracts", "name": "contracts", "depth": 0, "type": "folder" },
+    {
+      "path": "packages/contracts/navigation.ts",
+      "name": "navigation.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export type ShellNavigation = {\n  goToCart(): void;\n  goToLogin(returnUrl: string): void;\n};"
+    }
+  ],
+  "pros": [
+    "Times podem entregar partes do produto de forma independente.",
+    "Ajuda em organizações grandes com domínios bem separados.",
+    "Permite evolução gradual de tecnologias em alguns cenários."
+  ],
+  "cons": [
+    "Aumenta complexidade de deploy, observabilidade e integração.",
+    "Pode prejudicar performance se a composição não for cuidadosa.",
+    "Exige contratos fortes de navegação, estado, autenticação e design."
+  ],
+  "whenToUse": [
+    "Produtos grandes mantidos por múltiplos times autônomos.",
+    "Domínios com ciclos de release diferentes.",
+    "Cenários em que independência operacional vale mais que simplicidade."
+  ],
+  "realExample": "Um marketplace no qual times separados cuidam de busca, conta, pedidos, pagamentos e suporte.",
+  "exampleScenario": "O shell controla navegação, autenticação e layout base, enquanto os remotes `catalog`, `checkout` e `account` são publicados por times diferentes.",
+  "implementationHighlights": [
+    "Defina um shell leve responsável por composição, rotas globais e contratos compartilhados.",
+    "Publique cada microfrontend com pipeline e versionamento próprios.",
+    "Padronize autenticação, design system, telemetria e comunicação entre remotes."
+  ],
+  "commonPitfall": "Dividir cedo demais cria custo operacional alto sem autonomia real entre times.",
+  "accent": "#9B2226"
+}

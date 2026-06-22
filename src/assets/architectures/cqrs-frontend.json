@@ -1,0 +1,78 @@
+{
+  "id": "cqrs-frontend",
+  "name": "CQRS no Frontend",
+  "shortDescription": "Separa leitura e escrita em fluxos diferentes.",
+  "explanation": "CQRS no frontend diferencia comandos que alteram estado de consultas que montam telas. A UI passa a ter modelos de leitura otimizados e comandos explícitos para ações do usuário.",
+  "files": [
+    { "path": "src/app/queries", "name": "queries", "depth": 0, "type": "folder" },
+    {
+      "path": "src/app/queries/order-summary.query.ts",
+      "name": "order-summary.query.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export class OrderSummaryQuery {\n  execute(orderId: string) {\n    return this.http.get<OrderSummaryView>(`/orders/${orderId}/summary`);\n  }\n}"
+    },
+    {
+      "path": "src/app/queries/order-timeline.query.ts",
+      "name": "order-timeline.query.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export class OrderTimelineQuery {\n  execute(orderId: string) {\n    return this.http.get<OrderEventView[]>(`/orders/${orderId}/timeline`);\n  }\n}"
+    },
+    { "path": "src/app/commands", "name": "commands", "depth": 0, "type": "folder" },
+    {
+      "path": "src/app/commands/cancel-order.command.ts",
+      "name": "cancel-order.command.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export class CancelOrderCommand {\n  execute(orderId: string) {\n    return this.http.post(`/orders/${orderId}/cancel`, {});\n  }\n}"
+    },
+    {
+      "path": "src/app/commands/pay-order.command.ts",
+      "name": "pay-order.command.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export class PayOrderCommand {\n  execute(input: PayOrderInput) {\n    return this.http.post<PaymentResult>('/orders/pay', input);\n  }\n}"
+    },
+    { "path": "src/app/read-models", "name": "read-models", "depth": 0, "type": "folder" },
+    {
+      "path": "src/app/read-models/order-summary.view.ts",
+      "name": "order-summary.view.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export type OrderSummaryView = {\n  id: string;\n  statusLabel: string;\n  totalFormatted: string;\n  availableActions: Array<'pay' | 'cancel' | 'reorder'>;\n};"
+    },
+    { "path": "src/app/pages", "name": "pages", "depth": 0, "type": "folder" },
+    {
+      "path": "src/app/pages/order-detail.page.ts",
+      "name": "order-detail.page.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "@Component({ templateUrl: './order-detail.page.html' })\nexport class OrderDetailPage {\n  summary = inject(OrderSummaryQuery).execute(this.orderId);\n  cancel = inject(CancelOrderCommand);\n}"
+    }
+  ],
+  "pros": [
+    "Clareia ações que mudam estado versus telas de consulta.",
+    "Permite modelos de leitura mais simples para a UI.",
+    "Ajuda a lidar com fluxos assíncronos e consistência eventual."
+  ],
+  "cons": [
+    "Pode duplicar modelos e aumentar manutenção.",
+    "Exige cuidado para não transformar tudo em comando/query sem necessidade.",
+    "Combina melhor quando backend ou domínio já seguem separação parecida."
+  ],
+  "whenToUse": [
+    "Interfaces com muitas ações de negócio.",
+    "Dashboards com leituras agregadas e comandos críticos.",
+    "Produtos que precisam rastrear intenções do usuário."
+  ],
+  "realExample": "Uma tela de pedidos com consultas otimizadas para visualização e comandos para cancelar, pagar ou reenviar.",
+  "exampleScenario": "A página carrega `OrderSummaryQuery` para exibir dados agregados e usa `CancelOrderCommand` quando o usuário confirma cancelamento.",
+  "implementationHighlights": [
+    "Crie queries para modelos de leitura otimizados para telas.",
+    "Crie commands para ações que alteram estado ou disparam fluxos.",
+    "Modele feedback de comando: loading, sucesso, falha e atualização da leitura."
+  ],
+  "commonPitfall": "Separar leitura e escrita em telas simples pode duplicar código sem resolver um problema real.",
+  "accent": "#94D2BD"
+}

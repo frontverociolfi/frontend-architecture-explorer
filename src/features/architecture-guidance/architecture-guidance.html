@@ -1,0 +1,40 @@
+<div class="guidance-grid">
+  <section>
+    <h3>{{ 'guidance.whenToUse' | translate }}</h3>
+    <ul>
+      @for (item of architecture().whenToUse; track item) {
+        <li>{{ item }}</li>
+      }
+    </ul>
+  </section>
+
+  <section class="real-example">
+    <h3>{{ 'guidance.realExample' | translate }}</h3>
+    <p>{{ architecture().realExample }}</p>
+  </section>
+
+  @if (architecture().exampleScenario) {
+    <section class="example-scenario">
+      <h3>{{ 'guidance.exampleScenario' | translate }}</h3>
+      <p>{{ architecture().exampleScenario }}</p>
+    </section>
+  }
+
+  @if (architecture().implementationHighlights?.length) {
+    <section>
+      <h3>{{ 'guidance.implementation' | translate }}</h3>
+      <ul>
+        @for (item of architecture().implementationHighlights; track item) {
+          <li>{{ item }}</li>
+        }
+      </ul>
+    </section>
+  }
+
+  @if (architecture().commonPitfall) {
+    <section class="common-pitfall">
+      <h3>{{ 'guidance.commonPitfall' | translate }}</h3>
+      <p>{{ architecture().commonPitfall }}</p>
+    </section>
+  }
+</div>

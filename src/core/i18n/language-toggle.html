@@ -1,0 +1,14 @@
+<div class="language-toggle" role="group" [attr.aria-label]="'app.language.label' | translate">
+  @for (item of languages; track item.code) {
+    <button
+      type="button"
+      [class.active]="language() === item.code"
+      [attr.aria-pressed]="language() === item.code"
+      [attr.aria-label]="item.labelKey | translate"
+      (click)="setLanguage(item.code)"
+    >
+      <ng-icon [name]="item.icon" size="20" />
+      <span>{{ item.code.toUpperCase() }}</span>
+    </button>
+  }
+</div>

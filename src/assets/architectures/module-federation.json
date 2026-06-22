@@ -1,0 +1,79 @@
+{
+  "id": "module-federation",
+  "name": "Module Federation",
+  "shortDescription": "Carrega módulos remotos em tempo de execução.",
+  "explanation": "Module Federation permite compor aplicações a partir de bundles remotos. É uma técnica comum para microfrontends, especialmente quando cada time publica partes independentes da interface.",
+  "files": [
+    { "path": "shell", "name": "shell", "depth": 0, "type": "folder" },
+    {
+      "path": "shell/module-federation.config.ts",
+      "name": "module-federation.config.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export const config = {\n  remotes: {\n    checkout: 'http://localhost:4201/remoteEntry.js',\n  },\n};"
+    },
+    {
+      "path": "shell/src/app/app.routes.ts",
+      "name": "app.routes.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export const routes = [\n  {\n    path: 'checkout',\n    loadChildren: () => loadRemoteModule('checkout', './Routes'),\n  },\n];"
+    },
+    { "path": "remotes", "name": "remotes", "depth": 0, "type": "folder" },
+    { "path": "remotes/checkout", "name": "checkout", "depth": 1, "type": "folder" },
+    {
+      "path": "remotes/checkout/exposes.ts",
+      "name": "exposes.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "export default {\n  './Routes': './src/app/checkout.routes.ts',\n};"
+    },
+    {
+      "path": "remotes/checkout/src/app/checkout.routes.ts",
+      "name": "checkout.routes.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "export default [\n  { path: '', loadComponent: () => import('./checkout.page') },\n  { path: 'success', loadComponent: () => import('./success.page') },\n];"
+    },
+    { "path": "remotes/account", "name": "account", "depth": 1, "type": "folder" },
+    {
+      "path": "remotes/account/exposes.ts",
+      "name": "exposes.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "export default {\n  './ProfileWidget': './src/app/profile-widget.component.ts',\n};"
+    },
+    { "path": "shared", "name": "shared", "depth": 0, "type": "folder" },
+    {
+      "path": "shared/dependencies.ts",
+      "name": "dependencies.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export const shared = {\n  '@angular/core': { singleton: true, strictVersion: true },\n  '@angular/router': { singleton: true, strictVersion: true },\n};"
+    }
+  ],
+  "pros": [
+    "Permite deploy independente de partes da aplicação.",
+    "Compartilha dependências em runtime quando bem configurado.",
+    "Ajuda times grandes a dividir responsabilidades."
+  ],
+  "cons": [
+    "Configuração e debug de runtime são mais complexos.",
+    "Contratos quebrados podem falhar só em integração.",
+    "Versionamento de dependências compartilhadas exige cuidado."
+  ],
+  "whenToUse": [
+    "Microfrontends com times e releases independentes.",
+    "Produtos que precisam compor módulos remotos.",
+    "Cenários em que independência operacional justifica complexidade."
+  ],
+  "realExample": "Um portal corporativo cujo shell carrega módulos remotos de RH, financeiro, compras e atendimento.",
+  "exampleScenario": "O shell resolve a rota `/checkout` e baixa o remote `checkout` em runtime, permitindo que o time de checkout publique sem rebuild do shell.",
+  "implementationHighlights": [
+    "Configure remotes e exposes com contratos explícitos.",
+    "Compartilhe dependências críticas como Angular em singleton quando fizer sentido.",
+    "Crie fallback para falha de carregamento remoto e monitore erros de runtime."
+  ],
+  "commonPitfall": "Ignorar compatibilidade de versões entre shell e remotes pode causar falhas difíceis de reproduzir.",
+  "accent": "#94D2BD"
+}

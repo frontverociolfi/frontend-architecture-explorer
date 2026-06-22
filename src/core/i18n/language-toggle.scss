@@ -1,0 +1,43 @@
+:host {
+  display: inline-flex;
+}
+
+.language-toggle {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid color-mix(in srgb, var(--color-surface) 24%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-surface) 8%, transparent);
+}
+
+button {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  min-width: 68px;
+  min-height: 36px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 999px;
+  color: color-mix(in srgb, var(--color-surface) 84%, transparent);
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+button:hover,
+button:focus-visible,
+button.active {
+  color: var(--color-primary);
+  background: var(--color-surface);
+  outline: none;
+}
+
+ng-icon {
+  overflow: hidden;
+  border-radius: 50%;
+}

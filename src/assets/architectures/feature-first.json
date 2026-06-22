@@ -1,0 +1,98 @@
+{
+  "id": "feature-first",
+  "name": "Feature First",
+  "shortDescription": "Organiza o código por funcionalidades de negócio.",
+  "explanation": "Cada feature concentra seus componentes, páginas, serviços, estado e modelos. A intenção é reduzir saltos entre pastas técnicas e deixar claro onde uma funcionalidade vive.",
+  "files": [
+    { "path": "src/app/features", "name": "features", "depth": 0, "type": "folder" },
+    { "path": "src/app/features/auth", "name": "auth", "depth": 1, "type": "folder" },
+    {
+      "path": "src/app/features/auth/auth.routes.ts",
+      "name": "auth.routes.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "export const authRoutes = [\n  {\n    path: 'login',\n    loadComponent: () => import('./login.page')\n      .then((m) => m.LoginPage),\n  },\n];"
+    },
+    {
+      "path": "src/app/features/auth/login.page.ts",
+      "name": "login.page.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "@Component({\n  selector: 'app-login-page',\n  template: '<app-login-form />',\n})\nexport class LoginPage {}"
+    },
+    { "path": "src/app/features/auth/components", "name": "components", "depth": 2, "type": "folder" },
+    {
+      "path": "src/app/features/auth/components/login-form.component.ts",
+      "name": "login-form.component.ts",
+      "depth": 3,
+      "type": "file",
+      "content": "@Component({\n  selector: 'app-login-form',\n  templateUrl: './login-form.component.html',\n})\nexport class LoginFormComponent {\n  credentials = signal({ email: '', password: '' });\n}"
+    },
+    { "path": "src/app/features/auth/data-access", "name": "data-access", "depth": 2, "type": "folder" },
+    {
+      "path": "src/app/features/auth/data-access/auth.service.ts",
+      "name": "auth.service.ts",
+      "depth": 3,
+      "type": "file",
+      "content": "@Injectable()\nexport class AuthService {\n  login(credentials: Credentials) {\n    return this.http.post<Session>('/api/login', credentials);\n  }\n}"
+    },
+    { "path": "src/app/features/catalog", "name": "catalog", "depth": 1, "type": "folder" },
+    {
+      "path": "src/app/features/catalog/product-card.component.ts",
+      "name": "product-card.component.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "@Component({\n  selector: 'app-product-card',\n  templateUrl: './product-card.component.html',\n})\nexport class ProductCardComponent {\n  product = input.required<Product>();\n}"
+    },
+    { "path": "src/app/features/catalog/models", "name": "models", "depth": 2, "type": "folder" },
+    {
+      "path": "src/app/features/catalog/models/product.ts",
+      "name": "product.ts",
+      "depth": 3,
+      "type": "file",
+      "content": "export type Product = {\n  id: string;\n  title: string;\n  price: number;\n  available: boolean;\n};"
+    },
+    { "path": "src/app/features/checkout", "name": "checkout", "depth": 1, "type": "folder" },
+    { "path": "src/app/features/checkout/state", "name": "state", "depth": 2, "type": "folder" },
+    {
+      "path": "src/app/features/checkout/state/checkout.store.ts",
+      "name": "checkout.store.ts",
+      "depth": 3,
+      "type": "file",
+      "content": "export class CheckoutStore {\n  readonly items = signal<CartItem[]>([]);\n  readonly total = computed(() => this.items().reduce((sum, item) => sum + item.price, 0));\n}"
+    },
+    { "path": "src/app/shared", "name": "shared", "depth": 0, "type": "folder" },
+    { "path": "src/app/shared/ui", "name": "ui", "depth": 1, "type": "folder" },
+    {
+      "path": "src/app/shared/ui/button.component.ts",
+      "name": "button.component.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "@Component({\n  selector: 'app-button',\n  template: '<button class=\"button\"><ng-content /></button>',\n})\nexport class ButtonComponent {}"
+    },
+    { "path": "src/app/core", "name": "core", "depth": 0, "type": "folder" }
+  ],
+  "pros": [
+    "Boa navegação para times orientados a produto.",
+    "Facilita remover, migrar ou refatorar uma feature inteira.",
+    "Diminui acoplamento entre áreas da aplicação."
+  ],
+  "cons": [
+    "Pode gerar duplicação se padrões compartilhados não forem bem definidos.",
+    "Exige disciplina para não criar dependências cruzadas entre features."
+  ],
+  "whenToUse": [
+    "Aplicações com muitas jornadas independentes.",
+    "Times que trabalham por squads ou domínios de produto.",
+    "Projetos que precisam crescer sem virar uma grande pasta técnica."
+  ],
+  "realExample": "Um e-commerce com features como autenticação, catálogo, carrinho, checkout e pedidos.",
+  "exampleScenario": "Ao criar a feature de pedidos, o time adiciona páginas, componentes, serviços e estado dentro de `features/orders`, deixando claro que tudo ali pertence à jornada de pedidos.",
+  "implementationHighlights": [
+    "Crie uma pasta por funcionalidade de negócio, como `auth`, `catalog`, `checkout` e `orders`.",
+    "Mantenha dentro da feature seus componentes, páginas, rotas, serviços e modelos específicos.",
+    "Use `shared` apenas para elementos realmente reutilizados por várias features e `core` para infraestrutura global."
+  ],
+  "commonPitfall": "Mover tudo para `shared` cedo demais recria acoplamento global e enfraquece o isolamento das features.",
+  "accent": "teal"
+}

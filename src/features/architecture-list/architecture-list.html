@@ -1,0 +1,76 @@
+<header class="architecture-list__header">
+  <div>
+    <p class="sidebar__title">{{ 'list.title' | translate }}</p>
+    <p class="architecture-list__count">
+      {{ 'list.count' | translate: { visible: visibleCount(), total: architectures().length } }}
+    </p>
+  </div>
+
+  <div class="architecture-search">
+    <label for="architecture-search">{{ 'list.searchLabel' | translate }}</label>
+    <div class="architecture-search__control">
+      <input
+        id="architecture-search"
+        type="search"
+        [placeholder]="'list.searchPlaceholder' | translate"
+        [value]="searchTerm()"
+        (input)="updateSearchTerm($event)"
+      />
+      @if (searchTerm()) {
+        <button
+          type="button"
+          [attr.aria-label]="'list.clearSearch' | translate"
+          (click)="clearSearch()"
+        >
+          x
+        </button>
+      }
+    </div>
+  </div>
+</header>
+
+<section class="architecture-accordion" aria-labelledby="architecture-accordion-title">
+  <button
+    type="button"
+    class="architecture-accordion__header"
+    [class.expanded]="isAccordionExpanded()"
+    aria-controls="architecture-accordion-panel"
+    [attr.aria-expanded]="isAccordionExpanded()"
+    (click)="toggleAccordion()"
+  >
+    <div>
+      <h3 id="architecture-accordion-title">{{ 'list.accordionTitle' | translate }}</h3>
+      <p>{{ 'list.accordionDescription' | translate }}</p>
+    </div>
+    <div class="architecture-accordion__meta">
+      <span>{{ visibleCount() }}</span>
+      <i aria-hidden="true">{{ isAccordionExpanded() ? '-' : '+' }}</i>
+    </div>
+  </button>
+
+  @if (isAccordionExpanded()) {
+    @if (filteredArchitectures().length > 0) {
+      <nav
+        id="architecture-accordion-panel"
+        class="architecture-nav"
+        [attr.aria-label]="'list.availableAria' | translate"
+      >
+        @for (architecture of filteredArchitectures(); track architecture.id) {
+          <a
+            [routerLink]="['/arquiteturas', architecture.id]"
+            [class.active]="selectedId() === architecture.id"
+            [attr.aria-current]="selectedId() === architecture.id ? 'page' : null"
+          >
+            <strong>{{ architecture.name }}</strong>
+            <span>{{ architecture.shortDescription }}</span>
+          </a>
+        }
+      </nav>
+    } @else {
+      <section class="architecture-empty">
+        <h3>{{ 'list.emptyTitle' | translate }}</h3>
+        <p>{{ 'list.emptyDescription' | translate }}</p>
+      </section>
+    }
+  }
+</section>

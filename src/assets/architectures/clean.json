@@ -1,0 +1,80 @@
+{
+  "id": "clean",
+  "name": "Clean",
+  "shortDescription": "Organiza dependências apontando para regras centrais.",
+  "explanation": "Clean Architecture no frontend separa entidades, casos de uso, gateways e interface. As camadas externas conhecem as internas, mas o domínio não depende de framework, API ou componente visual.",
+  "files": [
+    { "path": "src/app/entities", "name": "entities", "depth": 0, "type": "folder" },
+    {
+      "path": "src/app/entities/invoice.ts",
+      "name": "invoice.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export class Invoice {\n  isOverdue(today: Date) {\n    return this.dueDate < today && !this.paidAt;\n  }\n}"
+    },
+    {
+      "path": "src/app/entities/user-permission.ts",
+      "name": "user-permission.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export class UserPermission {\n  canApprove(invoice: Invoice) {\n    return this.roles.includes('approver') && invoice.total.cents < this.limit.cents;\n  }\n}"
+    },
+    { "path": "src/app/use-cases", "name": "use-cases", "depth": 0, "type": "folder" },
+    {
+      "path": "src/app/use-cases/pay-invoice.ts",
+      "name": "pay-invoice.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export class PayInvoice {\n  constructor(private gateway: InvoiceGateway) {}\n\n  execute(invoiceId: string) {\n    return this.gateway.pay(invoiceId);\n  }\n}"
+    },
+    {
+      "path": "src/app/use-cases/approve-invoice.ts",
+      "name": "approve-invoice.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export class ApproveInvoice {\n  constructor(private invoices: InvoiceGateway) {}\n  execute(invoice: Invoice, permission: UserPermission) {\n    if (!permission.canApprove(invoice)) throw new Error('Forbidden');\n    return this.invoices.approve(invoice.id);\n  }\n}"
+    },
+    { "path": "src/app/interface-adapters", "name": "interface-adapters", "depth": 0, "type": "folder" },
+    { "path": "src/app/interface-adapters/presenters", "name": "presenters", "depth": 1, "type": "folder" },
+    {
+      "path": "src/app/interface-adapters/presenters/invoice.presenter.ts",
+      "name": "invoice.presenter.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "export function presentInvoice(invoice: Invoice): InvoiceView {\n  return { id: invoice.id, statusLabel: invoice.isOverdue(new Date()) ? 'Vencida' : 'Em dia' };\n}"
+    },
+    { "path": "src/app/frameworks", "name": "frameworks", "depth": 0, "type": "folder" },
+    { "path": "src/app/frameworks/angular", "name": "angular", "depth": 1, "type": "folder" },
+    {
+      "path": "src/app/frameworks/angular/invoice.page.ts",
+      "name": "invoice.page.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "@Component({ templateUrl: './invoice.page.html' })\nexport class InvoicePage {\n  view = computed(() => presentInvoice(this.invoice()));\n}"
+    }
+  ],
+  "pros": [
+    "Deixa dependências mais explícitas.",
+    "Reduz acoplamento entre UI e regras.",
+    "Favorece testes e evolução de longo prazo."
+  ],
+  "cons": [
+    "Pode adicionar cerimônia demais em telas simples.",
+    "Precisa de critérios claros para separar camadas.",
+    "A comunicação entre camadas pode ficar verbosa."
+  ],
+  "whenToUse": [
+    "Sistemas frontend com vida longa.",
+    "Produtos com casos de uso complexos ou auditáveis.",
+    "Times que valorizam isolamento de regras e testabilidade."
+  ],
+  "realExample": "Um painel financeiro em que cálculos, permissões e fluxos precisam ser testados fora da interface.",
+  "exampleScenario": "A tela de pagamento chama o caso de uso `PayInvoice`, que valida regras e conversa com um gateway sem conhecer Angular ou detalhes do endpoint.",
+  "implementationHighlights": [
+    "Coloque regras de negócio em entidades e casos de uso.",
+    "Defina interfaces para gateways consumidos pelos casos de uso.",
+    "Deixe componentes apenas orquestrarem entrada do usuário e estado de tela."
+  ],
+  "commonPitfall": "Duplicar camadas sem regras reais faz a aplicação parecer sofisticada, mas mais lenta de alterar.",
+  "accent": "#0A9396"
+}

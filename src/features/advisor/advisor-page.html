@@ -1,0 +1,107 @@
+<section class="advisor-hero" aria-labelledby="advisor-title">
+  <p class="eyebrow">{{ 'advisor.eyebrow' | translate }}</p>
+  <h1 id="advisor-title">{{ 'advisor.title' | translate }}</h1>
+  <p>{{ 'advisor.description' | translate }}</p>
+</section>
+
+<section class="advisor-layout">
+  <div class="questionnaire" [attr.aria-label]="'advisor.questionsAria' | translate">
+    @for (question of questions(); track question.id) {
+      <article class="question-card">
+        <h2>{{ question.title }}</h2>
+
+        <div class="option-grid">
+          @for (option of question.options; track option.label) {
+            <button
+              type="button"
+              [class.active]="isSelected(question, option)"
+              (click)="answer(question, option)"
+            >
+              <strong>{{ option.label }}</strong>
+              <span>{{ option.description }}</span>
+              <small><b>{{ 'advisor.bestFor' | translate }}</b> {{ option.bestFor }}</small>
+              <small><b>{{ 'advisor.avoidIf' | translate }}</b> {{ option.avoidIf }}</small>
+            </button>
+          }
+        </div>
+      </article>
+    }
+  </div>
+
+  <aside
+    class="recommendation-panel"
+    [class.recommendation-panel--locked]="!isComplete()"
+    [attr.aria-label]="'advisor.panelAria' | translate"
+  >
+    <div class="progress-summary">
+      <div>
+        <p class="progress">
+          {{ 'advisor.answers' | translate: { answered: answeredCount(), total: questions().length } }}
+        </p>
+        <strong>{{ progressPercent() }}%</strong>
+      </div>
+      <div
+        class="progress-bar"
+        role="progressbar"
+        [attr.aria-valuenow]="answeredCount()"
+        aria-valuemin="0"
+        [attr.aria-valuemax]="questions().length"
+        [attr.aria-label]="'advisor.progressAria' | translate"
+      >
+        <span [style.width.%]="progressPercent()"></span>
+      </div>
+    </div>
+
+    @if (isComplete()) {
+      <p class="result-status">{{ 'advisor.finalResult' | translate }}</p>
+      <h2>{{ recommendation().name }}</h2>
+      <p>{{ recommendation().shortDescription }}</p>
+      <p class="recommendation-reason">{{ recommendation().explanation }}</p>
+
+      <h3>{{ 'advisor.why' | translate }}</h3>
+      <ul>
+        @for (reason of recommendationReasons(); track reason) {
+          <li>{{ reason }}</li>
+        }
+      </ul>
+
+      <h3>{{ 'advisor.alternatives' | translate }}</h3>
+      <ul>
+        @for (architecture of alternatives(); track architecture.id) {
+          <li>{{ architecture.name }}</li>
+        }
+      </ul>
+    } @else {
+      <p class="result-status">{{ 'advisor.previewLocked' | translate }}</p>
+      <h2>{{ 'advisor.completeSimulator' | translate }}</h2>
+      <p>
+        {{
+          'advisor.missingAnswers'
+            | translate: { count: remainingCount(), plural: remainingCount() === 1 ? '' : 's' }
+        }}
+      </p>
+
+      @if (hasAnswers()) {
+        <div class="preview-card" [attr.aria-label]="'advisor.partialPreview' | translate">
+          <span>{{ 'advisor.partialTrend' | translate }}</span>
+          <strong>{{ recommendation().name }}</strong>
+          <p>{{ recommendation().shortDescription }}</p>
+        </div>
+      } @else {
+        <div
+          class="preview-card preview-card--empty"
+          [attr.aria-label]="'advisor.emptyPreview' | translate"
+        >
+          <span>{{ 'advisor.previewLocked' | translate }}</span>
+          <strong>{{ 'advisor.noRecommendation' | translate }}</strong>
+          <p>{{ 'advisor.start' | translate }}</p>
+        </div>
+      }
+    }
+
+    <div class="actions">
+      <button type="button" (click)="reset()">{{ 'advisor.reset' | translate }}</button>
+      <a routerLink="/" fragment="arquiteturas">{{ 'advisor.viewArchitectures' | translate }}</a>
+    </div>
+  </aside>
+</section>

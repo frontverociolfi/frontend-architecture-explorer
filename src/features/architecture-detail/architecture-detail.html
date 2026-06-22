@@ -1,0 +1,25 @@
+<article class="details" [style.--accent]="accentColor()">
+  <header class="details__header">
+    <p class="eyebrow">{{ 'detail.eyebrow' | translate }}</p>
+    <h2>{{ architecture().name }}</h2>
+    <p>{{ architecture().explanation }}</p>
+  </header>
+
+  <app-mini-ide [architecture]="architecture()" />
+
+  <section
+    id="comparador"
+    class="detail-section"
+    [attr.aria-label]="'detail.comparisonAria' | translate"
+  >
+    <app-comparison [architecture]="architecture()" />
+  </section>
+
+  <section
+    id="guia-de-uso"
+    class="detail-section"
+    [attr.aria-label]="'detail.guidanceAria' | translate"
+  >
+    <app-architecture-guidance [architecture]="architecture()" />
+  </section>
+</article>

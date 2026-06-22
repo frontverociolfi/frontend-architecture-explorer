@@ -1,0 +1,78 @@
+{
+  "id": "bff",
+  "name": "BFF",
+  "shortDescription": "Usa um backend específico para atender a experiência frontend.",
+  "explanation": "Backend for Frontend organiza o frontend em torno de endpoints pensados para uma interface específica. No código do cliente, costuma haver uma camada clara de data access que conversa com o BFF.",
+  "files": [
+    { "path": "src/app/features/dashboard", "name": "dashboard", "depth": 0, "type": "folder" },
+    {
+      "path": "src/app/features/dashboard/dashboard.page.ts",
+      "name": "dashboard.page.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "@Component({ templateUrl: './dashboard.page.html' })\nexport class DashboardPage {\n  data = inject(DashboardBff).summary();\n}"
+    },
+    {
+      "path": "src/app/features/dashboard/revenue-card.component.ts",
+      "name": "revenue-card.component.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "@Component({ selector: 'app-revenue-card', templateUrl: './revenue-card.component.html' })\nexport class RevenueCardComponent {\n  revenue = input.required<RevenueView>();\n}"
+    },
+    { "path": "src/app/data-access", "name": "data-access", "depth": 0, "type": "folder" },
+    {
+      "path": "src/app/data-access/dashboard-bff.service.ts",
+      "name": "dashboard-bff.service.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "@Injectable({ providedIn: 'root' })\nexport class DashboardBff {\n  summary() {\n    return this.http.get<DashboardView>('/bff/dashboard');\n  }\n}"
+    },
+    {
+      "path": "src/app/data-access/ticket-bff.service.ts",
+      "name": "ticket-bff.service.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "@Injectable({ providedIn: 'root' })\nexport class TicketBff {\n  reopen(ticketId: string) {\n    return this.http.post(`/bff/tickets/${ticketId}/reopen`, {});\n  }\n}"
+    },
+    { "path": "src/app/models", "name": "models", "depth": 0, "type": "folder" },
+    {
+      "path": "src/app/models/dashboard-view.ts",
+      "name": "dashboard-view.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export type DashboardView = {\n  revenue: RevenueView;\n  tickets: TicketSummaryView;\n  alerts: AlertView[];\n};"
+    },
+    { "path": "bff", "name": "bff", "depth": 0, "type": "folder" },
+    {
+      "path": "bff/routes/dashboard.route.ts",
+      "name": "dashboard.route.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "router.get('/dashboard', async (_req, res) => {\n  const [revenue, tickets, alerts] = await Promise.all([sales(), support(), risk()]);\n  res.json({ revenue, tickets, alerts });\n});"
+    }
+  ],
+  "pros": [
+    "Reduz montagem complexa de dados no browser.",
+    "Entrega contratos mais próximos da tela.",
+    "Ajuda quando múltiplos canais precisam de APIs diferentes."
+  ],
+  "cons": [
+    "Adiciona uma camada backend para manter.",
+    "Pode esconder problemas de domínio se virar apenas agregador improvisado.",
+    "Exige alinhamento forte entre frontend e time do BFF."
+  ],
+  "whenToUse": [
+    "Experiências que agregam dados de vários serviços.",
+    "Produtos com web, mobile e parceiros consumindo formatos diferentes.",
+    "Telas que precisam de contratos estáveis e orientados à UI."
+  ],
+  "realExample": "Um dashboard executivo que combina métricas de faturamento, tickets, usuários e alertas em um único payload.",
+  "exampleScenario": "A tela inicial chama `/bff/dashboard`, que já retorna cards, gráficos e alertas prontos para renderização, sem o browser agregar cinco APIs.",
+  "implementationHighlights": [
+    "Desenhe endpoints orientados à experiência da tela.",
+    "Mantenha no frontend uma camada de data access específica para o BFF.",
+    "Versione contratos entre frontend e BFF quando a tela evoluir."
+  ],
+  "commonPitfall": "Transformar o BFF em um backend genérico compartilhado por todos os canais enfraquece o propósito da abordagem.",
+  "accent": "#EE9B00"
+}

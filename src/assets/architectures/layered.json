@@ -1,0 +1,93 @@
+{
+  "id": "layered",
+  "name": "Layered",
+  "shortDescription": "Separa responsabilidades em camadas técnicas.",
+  "explanation": "A aplicação é dividida por tipo de responsabilidade: apresentação, serviços, modelos, estado e infraestrutura. É uma arquitetura familiar e direta para projetos menores ou equipes em formação.",
+  "files": [
+    { "path": "src/app/components", "name": "components", "depth": 0, "type": "folder" },
+    {
+      "path": "src/app/components/table.component.ts",
+      "name": "table.component.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "@Component({\n  selector: 'app-table',\n  templateUrl: './table.component.html',\n})\nexport class TableComponent {\n  rows = input.required<Customer[]>();\n}"
+    },
+    {
+      "path": "src/app/components/filter-bar.component.ts",
+      "name": "filter-bar.component.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "@Component({\n  selector: 'app-filter-bar',\n  template: '<input [formControl]=\"query\" placeholder=\"Buscar\" />',\n})\nexport class FilterBarComponent {\n  query = new FormControl('', { nonNullable: true });\n}"
+    },
+    { "path": "src/app/pages", "name": "pages", "depth": 0, "type": "folder" },
+    {
+      "path": "src/app/pages/customers.page.ts",
+      "name": "customers.page.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "@Component({\n  template: '<app-table [rows]=\"customers()\" />',\n})\nexport class CustomersPage {\n  customers = inject(CustomerService).list();\n}"
+    },
+    {
+      "path": "src/app/pages/customer-detail.page.ts",
+      "name": "customer-detail.page.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "@Component({ templateUrl: './customer-detail.page.html' })\nexport class CustomerDetailPage {\n  private route = inject(ActivatedRoute);\n  customer = inject(CustomerService).find(this.route.snapshot.params['id']);\n}"
+    },
+    { "path": "src/app/services", "name": "services", "depth": 0, "type": "folder" },
+    {
+      "path": "src/app/services/customer.service.ts",
+      "name": "customer.service.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "@Injectable({ providedIn: 'root' })\nexport class CustomerService {\n  private http = inject(HttpClient);\n\n  list() {\n    return toSignal(this.http.get<Customer[]>('/api/customers'));\n  }\n}"
+    },
+    {
+      "path": "src/app/services/report.service.ts",
+      "name": "report.service.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "@Injectable({ providedIn: 'root' })\nexport class ReportService {\n  exportCustomers() {\n    return this.http.get('/api/reports/customers.csv', { responseType: 'blob' });\n  }\n}"
+    },
+    { "path": "src/app/models", "name": "models", "depth": 0, "type": "folder" },
+    {
+      "path": "src/app/models/customer.ts",
+      "name": "customer.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export type Customer = {\n  id: string;\n  name: string;\n  status: 'active' | 'blocked';\n};"
+    },
+    { "path": "src/app/store", "name": "store", "depth": 0, "type": "folder" },
+    {
+      "path": "src/app/store/customer.store.ts",
+      "name": "customer.store.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export class CustomerStore {\n  readonly selectedId = signal<string | null>(null);\n  select(id: string) { this.selectedId.set(id); }\n}"
+    }
+  ],
+  "pros": [
+    "Muito simples de entender no início do projeto.",
+    "Funciona bem para aplicações pequenas e médias.",
+    "Ajuda quem está aprendendo a separar responsabilidades."
+  ],
+  "cons": [
+    "Pastas podem ficar grandes e genéricas com o crescimento.",
+    "Uma mudança de feature costuma exigir edição em várias camadas.",
+    "Pode esconder os limites reais do negócio."
+  ],
+  "whenToUse": [
+    "Projetos pequenos, protótipos e MVPs.",
+    "Aplicações CRUD com poucas regras de negócio.",
+    "Times que precisam de uma estrutura previsível e simples."
+  ],
+  "realExample": "Um painel administrativo interno com páginas, componentes reutilizáveis e serviços HTTP.",
+  "exampleScenario": "Uma tela de clientes usa `pages/customers.page.ts`, componentes genéricos de tabela em `components` e chamadas HTTP centralizadas em `services/customer.service.ts`.",
+  "implementationHighlights": [
+    "Separe pastas por tipo técnico: `pages`, `components`, `services`, `models` e `store`.",
+    "Mantenha componentes visuais sem regras de negócio complexas.",
+    "Centralize integrações externas em serviços para evitar chamadas HTTP espalhadas pela UI."
+  ],
+  "commonPitfall": "Com o crescimento, pastas como `components` e `services` podem virar depósitos enormes sem contexto de negócio.",
+  "accent": "#94D2BD"
+}

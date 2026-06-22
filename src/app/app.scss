@@ -1,0 +1,95 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+  color: var(--color-primary);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-secondary) 22%, transparent), transparent 44%),
+    linear-gradient(315deg, color-mix(in srgb, var(--color-accent) 8%, transparent), transparent 42%),
+    var(--color-surface);
+}
+
+button {
+  font: inherit;
+}
+
+.app-shell {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 32px 0;
+}
+
+.app-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 10px;
+  border: 1px solid color-mix(in srgb, var(--color-secondary) 30%, var(--color-primary));
+  border-radius: 8px;
+  background: var(--color-primary);
+  box-shadow: 0 14px 44px color-mix(
+    in srgb,
+    color-mix(in srgb, var(--color-primary) 84%, var(--color-accent)) 10%,
+    transparent
+  );
+}
+
+.top-menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.top-menu a {
+  flex: 1 1 180px;
+  padding: 11px 14px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: var(--color-surface);
+  font-size: 0.92rem;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+}
+
+.top-menu a:hover,
+.top-menu a:focus-visible,
+.top-menu a.active {
+  border-color: color-mix(in srgb, var(--color-surface) 42%, transparent);
+  color: var(--color-primary);
+  background: var(--color-surface);
+  outline: none;
+}
+
+.app-footer {
+  margin-top: 32px;
+  padding: 18px 0 4px;
+  color: color-mix(in srgb, var(--color-primary) 72%, var(--color-surface));
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .app-shell {
+    width: min(100% - 20px, 1180px);
+    padding: 18px 0;
+  }
+
+  .top-menu {
+    display: grid;
+  }
+
+  .top-menu a {
+    flex-basis: 100%;
+    text-align: left;
+  }
+
+  .app-header {
+    grid-template-columns: 1fr;
+  }
+}
+
+

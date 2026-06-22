@@ -1,0 +1,18 @@
+<section class="hero" aria-labelledby="page-title">
+  <div class="hero__copy">
+    <p class="eyebrow">{{ 'home.eyebrow' | translate }}</p>
+    <h1 id="page-title">{{ 'home.title' | translate }}</h1>
+    <p>{{ 'home.description' | translate }}</p>
+  </div>
+</section>
+
+<section
+  id="arquiteturas"
+  class="architecture-menu"
+  [attr.aria-label]="'home.architectureMenuAria' | translate"
+>
+  <app-architecture-list
+    [architectures]="architectures()"
+    selectedId=""
+  />
+</section>

@@ -1,0 +1,19 @@
+<section class="detail-nav" [attr.aria-label]="'detail.navAria' | translate">
+  <a routerLink="/" fragment="arquiteturas">{{ 'detail.back' | translate }}</a>
+
+  <app-architecture-list
+    [architectures]="architectures()"
+    [selectedId]="architecture()?.id ?? ''"
+  />
+</section>
+
+@if (architecture(); as selectedArchitecture) {
+  <app-architecture-detail [architecture]="selectedArchitecture" />
+} @else {
+  <section class="not-found">
+    <p class="eyebrow">{{ 'detail.notFoundEyebrow' | translate }}</p>
+    <h1>{{ 'detail.notFoundTitle' | translate }}</h1>
+    <p>{{ 'detail.notFoundDescription' | translate }}</p>
+    <a routerLink="/" fragment="arquiteturas">{{ 'detail.notFoundAction' | translate }}</a>
+  </section>
+}

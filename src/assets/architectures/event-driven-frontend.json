@@ -1,0 +1,79 @@
+{
+  "id": "event-driven-frontend",
+  "name": "Event-Driven Frontend",
+  "shortDescription": "Coordena módulos por eventos de domínio ou UI.",
+  "explanation": "Nessa abordagem, partes do frontend reagem a eventos publicados por outras partes. Ela reduz acoplamento direto entre módulos, mas exige contratos e observabilidade dos eventos.",
+  "files": [
+    { "path": "src/app/events", "name": "events", "depth": 0, "type": "folder" },
+    {
+      "path": "src/app/events/cart-events.ts",
+      "name": "cart-events.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export type CartEvent =\n  | { type: 'cart.item-added'; sku: string }\n  | { type: 'cart.checked-out'; orderId: string };"
+    },
+    {
+      "path": "src/app/events/notification-events.ts",
+      "name": "notification-events.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export type NotificationEvent =\n  | { type: 'notification.queued'; message: string }\n  | { type: 'notification.dismissed'; id: string };"
+    },
+    { "path": "src/app/event-bus", "name": "event-bus", "depth": 0, "type": "folder" },
+    {
+      "path": "src/app/event-bus/event-bus.service.ts",
+      "name": "event-bus.service.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "@Injectable({ providedIn: 'root' })\nexport class EventBus {\n  private events = new Subject<AppEvent>();\n  publish(event: AppEvent) { this.events.next(event); }\n  listen() { return this.events.asObservable(); }\n}"
+    },
+    { "path": "src/app/subscribers", "name": "subscribers", "depth": 0, "type": "folder" },
+    {
+      "path": "src/app/subscribers/cart-analytics.subscriber.ts",
+      "name": "cart-analytics.subscriber.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "@Injectable()\nexport class CartAnalyticsSubscriber {\n  constructor(bus: EventBus, analytics: Analytics) {\n    bus.listen().pipe(filter(isCartItemAdded)).subscribe((event) => analytics.track(event));\n  }\n}"
+    },
+    {
+      "path": "src/app/subscribers/header-counter.subscriber.ts",
+      "name": "header-counter.subscriber.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "@Injectable()\nexport class HeaderCounterSubscriber {\n  count = signal(0);\n  handle(event: CartEvent) { if (event.type === 'cart.item-added') this.count.update((v) => v + 1); }\n}"
+    },
+    { "path": "src/app/features", "name": "features", "depth": 0, "type": "folder" },
+    { "path": "src/app/features/cart", "name": "cart", "depth": 1, "type": "folder" },
+    {
+      "path": "src/app/features/cart/add-to-cart.handler.ts",
+      "name": "add-to-cart.handler.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "export function addToCart(product: Product, bus: EventBus) {\n  bus.publish({ type: 'cart.item-added', sku: product.sku });\n}"
+    }
+  ],
+  "pros": [
+    "Reduz dependência direta entre módulos.",
+    "Facilita reações transversais como analytics, notificações e sincronização.",
+    "Combina bem com aplicações em tempo real."
+  ],
+  "cons": [
+    "Fluxos podem ficar difíceis de seguir se eventos forem genéricos demais.",
+    "Exige naming, contratos e logs consistentes.",
+    "Debug pode ser mais complexo que chamadas diretas."
+  ],
+  "whenToUse": [
+    "Produtos com muitas reações indiretas a ações do usuário.",
+    "Aplicações colaborativas ou em tempo real.",
+    "Microfrontends ou módulos independentes que precisam se comunicar."
+  ],
+  "realExample": "Uma plataforma de colaboração onde comentários, presença online e notificações reagem a eventos compartilhados.",
+  "exampleScenario": "Quando o usuário adiciona um item ao carrinho, o módulo de recomendações, analytics e contador do header reagem ao evento `cart.item-added`.",
+  "implementationHighlights": [
+    "Defina eventos com nomes específicos e payloads tipados.",
+    "Use um event bus ou streams observáveis para publicar e escutar eventos.",
+    "Registre logs ou tracing para entender quem publicou e quem reagiu."
+  ],
+  "commonPitfall": "Eventos genéricos como `updated` ou `changed` tornam o fluxo invisível e difícil de depurar.",
+  "accent": "#9B2226"
+}

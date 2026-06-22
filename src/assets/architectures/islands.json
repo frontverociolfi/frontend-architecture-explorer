@@ -1,0 +1,77 @@
+{
+  "id": "islands-architecture",
+  "name": "Islands Architecture",
+  "shortDescription": "Hidrata apenas partes interativas de uma página.",
+  "explanation": "Islands Architecture renderiza a maior parte da página como HTML estático ou server-rendered e ativa JavaScript apenas em ilhas interativas. É muito usada em sites de conteúdo e experiências com performance crítica.",
+  "files": [
+    { "path": "src/pages", "name": "pages", "depth": 0, "type": "folder" },
+    {
+      "path": "src/pages/product-page.html",
+      "name": "product-page.html",
+      "depth": 1,
+      "type": "file",
+      "content": "<article>\n  <product-gallery island />\n  <static-description />\n  <add-to-cart island />\n</article>"
+    },
+    {
+      "path": "src/pages/blog-post.html",
+      "name": "blog-post.html",
+      "depth": 1,
+      "type": "file",
+      "content": "<main>\n  <article-content />\n  <newsletter-signup island=\"visible\" />\n  <comments island=\"idle\" />\n</main>"
+    },
+    { "path": "src/islands", "name": "islands", "depth": 0, "type": "folder" },
+    {
+      "path": "src/islands/add-to-cart.ts",
+      "name": "add-to-cart.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export function AddToCartIsland() {\n  return hydrateWhenVisible(() => import('./add-to-cart.component'));\n}"
+    },
+    {
+      "path": "src/islands/product-gallery.ts",
+      "name": "product-gallery.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export function ProductGalleryIsland() {\n  return hydrateOnInteraction(() => import('./product-gallery.component'));\n}"
+    },
+    {
+      "path": "src/islands/newsletter-signup.ts",
+      "name": "newsletter-signup.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export function NewsletterSignupIsland() {\n  return hydrateWhenVisible(() => import('./newsletter-signup.component'));\n}"
+    },
+    { "path": "src/content", "name": "content", "depth": 0, "type": "folder" },
+    {
+      "path": "src/content/product-description.md",
+      "name": "product-description.md",
+      "depth": 1,
+      "type": "file",
+      "content": "# Produto\n\nConteúdo estático renderizado sem enviar JavaScript desnecessário."
+    }
+  ],
+  "pros": [
+    "Reduz JavaScript enviado ao usuário.",
+    "Melhora performance percebida em páginas com muito conteúdo.",
+    "Mantém interatividade apenas onde faz sentido."
+  ],
+  "cons": [
+    "Não é ideal para aplicações altamente interativas de ponta a ponta.",
+    "Exige framework ou estratégia compatível.",
+    "Compartilhamento de estado entre ilhas pode ficar delicado."
+  ],
+  "whenToUse": [
+    "Sites de conteúdo, e-commerce editorial e landing pages ricas.",
+    "Páginas onde SEO e performance são prioridade.",
+    "Experiências com poucos pontos realmente interativos."
+  ],
+  "realExample": "Uma página de produto com conteúdo estático, galeria interativa e botão de compra hidratado separadamente.",
+  "exampleScenario": "A descrição, preço e SEO chegam como HTML, enquanto galeria, seletor de variação e botão de compra são ilhas hidratadas sob demanda.",
+  "implementationHighlights": [
+    "Identifique quais partes da página realmente precisam de JavaScript.",
+    "Renderize conteúdo estático no servidor ou build.",
+    "Hidrate ilhas por visibilidade, interação ou prioridade da jornada."
+  ],
+  "commonPitfall": "Usar ilhas em uma aplicação totalmente transacional pode complicar estado compartilhado sem ganho de performance proporcional.",
+  "accent": "#0A9396"
+}

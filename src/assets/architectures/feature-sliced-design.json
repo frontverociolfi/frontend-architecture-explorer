@@ -1,0 +1,91 @@
+{
+  "id": "feature-sliced-design",
+  "name": "Feature Sliced Design",
+  "shortDescription": "Divide o frontend em camadas e slices de produto.",
+  "explanation": "Feature Sliced Design organiza o código em camadas como app, pages, widgets, features, entities e shared. Cada slice representa uma parte de produto com regras de dependência bem definidas.",
+  "files": [
+    { "path": "src/app", "name": "app", "depth": 0, "type": "folder" },
+    {
+      "path": "src/app/providers.ts",
+      "name": "providers.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export const appProviders = [\n  provideRouter(routes),\n  provideHttpClient(),\n];"
+    },
+    { "path": "src/pages", "name": "pages", "depth": 0, "type": "folder" },
+    { "path": "src/pages/product", "name": "product", "depth": 1, "type": "folder" },
+    {
+      "path": "src/pages/product/ui/product-page.ts",
+      "name": "product-page.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "export function ProductPage() {\n  return <ProductDetailsWidget />;\n}"
+    },
+    { "path": "src/widgets", "name": "widgets", "depth": 0, "type": "folder" },
+    { "path": "src/widgets/product-details", "name": "product-details", "depth": 1, "type": "folder" },
+    {
+      "path": "src/widgets/product-details/ui/product-details-widget.ts",
+      "name": "product-details-widget.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "export function ProductDetailsWidget() {\n  return <><ProductInfo /><AddToCartButton /></>;\n}"
+    },
+    { "path": "src/features", "name": "features", "depth": 0, "type": "folder" },
+    { "path": "src/features/add-to-cart", "name": "add-to-cart", "depth": 1, "type": "folder" },
+    {
+      "path": "src/features/add-to-cart/ui/add-to-cart-button.ts",
+      "name": "add-to-cart-button.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "export function AddToCartButton({ productId }) {\n  const addToCart = useAddToCart();\n  return <button onClick={() => addToCart(productId)}>Add</button>;\n}"
+    },
+    {
+      "path": "src/features/add-to-cart/model/use-add-to-cart.ts",
+      "name": "use-add-to-cart.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "export function useAddToCart() {\n  const cart = useCartStore();\n  return (productId: string) => cart.add(productId);\n}"
+    },
+    { "path": "src/entities", "name": "entities", "depth": 0, "type": "folder" },
+    { "path": "src/entities/product", "name": "product", "depth": 1, "type": "folder" },
+    {
+      "path": "src/entities/product/model/product.ts",
+      "name": "product.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "export type Product = {\n  id: string;\n  title: string;\n  price: number;\n};"
+    },
+    { "path": "src/shared", "name": "shared", "depth": 0, "type": "folder" },
+    {
+      "path": "src/shared/api/http.ts",
+      "name": "http.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export const http = {\n  get: <T>(url: string) => fetch(url).then((r) => r.json() as Promise<T>),\n};"
+    }
+  ],
+  "pros": [
+    "Define regras claras de dependência entre camadas.",
+    "Escala bem em produtos com muitas features.",
+    "Ajuda a padronizar organização sem prender tudo em camadas técnicas."
+  ],
+  "cons": [
+    "Tem vocabulário próprio e curva de aprendizado.",
+    "Pode parecer rígida para projetos pequenos.",
+    "Requer disciplina para respeitar direção de dependências."
+  ],
+  "whenToUse": [
+    "Produtos grandes com muitas áreas de UI.",
+    "Times que querem uma convenção forte para slices e camadas.",
+    "Frontends onde feature-first puro começou a ficar inconsistente."
+  ],
+  "realExample": "Um marketplace com pages, widgets de vitrine, features de carrinho e entities de produto, vendedor e pedido.",
+  "exampleScenario": "A página de produto fica em `pages/product`, o bloco de recomendações em `widgets/recommendations`, a ação de adicionar ao carrinho em `features/add-to-cart` e o modelo de produto em `entities/product`.",
+  "implementationHighlights": [
+    "Use camadas como `app`, `pages`, `widgets`, `features`, `entities` e `shared`.",
+    "Organize cada camada em slices com API pública clara.",
+    "Respeite a direção de dependência: camadas superiores podem depender das inferiores, não o contrário."
+  ],
+  "commonPitfall": "Misturar imports internos de slices quebra o encapsulamento e transforma a convenção em apenas nomes de pasta.",
+  "accent": "#9B2226"
+}

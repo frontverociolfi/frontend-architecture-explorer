@@ -1,0 +1,95 @@
+{
+  "id": "hexagonal",
+  "name": "Hexagonal",
+  "shortDescription": "Separa domínio, portas e adaptadores também no frontend.",
+  "explanation": "A arquitetura hexagonal no frontend coloca regras e casos de uso no centro, enquanto componentes, HTTP, storage e bibliotecas externas ficam como adaptadores. A interface consome portas, não implementações concretas.",
+  "files": [
+    { "path": "src/app/domain", "name": "domain", "depth": 0, "type": "folder" },
+    {
+      "path": "src/app/domain/cart.ts",
+      "name": "cart.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export class Cart {\n  add(item: CartItem) {\n    return new Cart([...this.items, item]);\n  }\n}"
+    },
+    {
+      "path": "src/app/domain/coupon.ts",
+      "name": "coupon.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export class Coupon {\n  apply(total: Money) {\n    return total.discount(this.percentage);\n  }\n}"
+    },
+    { "path": "src/app/ports", "name": "ports", "depth": 0, "type": "folder" },
+    {
+      "path": "src/app/ports/cart.port.ts",
+      "name": "cart.port.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export interface CartPort {\n  load(): Promise<Cart>;\n  save(cart: Cart): Promise<void>;\n}"
+    },
+    { "path": "src/app/application", "name": "application", "depth": 0, "type": "folder" },
+    {
+      "path": "src/app/application/add-to-cart.use-case.ts",
+      "name": "add-to-cart.use-case.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export class AddToCart {\n  constructor(private cartPort: CartPort) {}\n\n  execute(item: CartItem) {\n    return this.cartPort.add(item);\n  }\n}"
+    },
+    {
+      "path": "src/app/application/apply-coupon.use-case.ts",
+      "name": "apply-coupon.use-case.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "export class ApplyCoupon {\n  constructor(private coupons: CouponPort, private cart: CartPort) {}\n  async execute(code: string) {\n    const coupon = await this.coupons.find(code);\n    return this.cart.apply(coupon);\n  }\n}"
+    },
+    { "path": "src/app/adapters", "name": "adapters", "depth": 0, "type": "folder" },
+    { "path": "src/app/adapters/http", "name": "http", "depth": 1, "type": "folder" },
+    {
+      "path": "src/app/adapters/http/http-cart.adapter.ts",
+      "name": "http-cart.adapter.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "@Injectable()\nexport class HttpCartAdapter implements CartPort {\n  load() { return firstValueFrom(this.http.get<Cart>('/api/cart')); }\n  save(cart: Cart) { return firstValueFrom(this.http.put<void>('/api/cart', cart)); }\n}"
+    },
+    { "path": "src/app/adapters/storage", "name": "storage", "depth": 1, "type": "folder" },
+    {
+      "path": "src/app/adapters/storage/local-cart.adapter.ts",
+      "name": "local-cart.adapter.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "export class LocalCartAdapter implements CartPort {\n  load() { return Promise.resolve(JSON.parse(localStorage.getItem('cart') ?? '{}')); }\n  save(cart: Cart) { localStorage.setItem('cart', JSON.stringify(cart)); return Promise.resolve(); }\n}"
+    },
+    { "path": "src/app/ui", "name": "ui", "depth": 0, "type": "folder" },
+    {
+      "path": "src/app/ui/cart.page.ts",
+      "name": "cart.page.ts",
+      "depth": 1,
+      "type": "file",
+      "content": "@Component({ templateUrl: './cart.page.html' })\nexport class CartPage {\n  addToCart = inject(AddToCart);\n}"
+    }
+  ],
+  "pros": [
+    "Protege regras de negócio contra detalhes de UI e infraestrutura.",
+    "Facilita testes de casos de uso sem Angular, DOM ou HTTP.",
+    "Ajuda quando o frontend tem lógica rica e integrações variadas."
+  ],
+  "cons": [
+    "Cria mais arquivos e conceitos do que um CRUD simples precisa.",
+    "Exige disciplina para componentes não pularem direto para adaptadores.",
+    "Pode parecer abstrata demais para times iniciantes."
+  ],
+  "whenToUse": [
+    "Frontends com regras de negócio importantes.",
+    "Aplicações que precisam trocar fontes de dados ou integrações.",
+    "Produtos onde testes de domínio trazem valor real."
+  ],
+  "realExample": "Um checkout com regras locais de carrinho, cupons, estoque e múltiplos adaptadores de pagamento.",
+  "exampleScenario": "A regra de aplicar cupom fica no domínio, enquanto o adaptador HTTP apenas traduz chamadas para a API de promoções.",
+  "implementationHighlights": [
+    "Modele portas para operações que o domínio precisa executar.",
+    "Implemente adaptadores para HTTP, storage, analytics ou SDKs externos.",
+    "Faça componentes dependerem de casos de uso, não diretamente de clientes de infraestrutura."
+  ],
+  "commonPitfall": "Criar portas para qualquer detalhe pequeno deixa a arquitetura burocrática e difícil de navegar.",
+  "accent": "teal"
+}

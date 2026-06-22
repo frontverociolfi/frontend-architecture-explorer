@@ -1,0 +1,19 @@
+<div class="insight-grid">
+  <section>
+    <h3>{{ 'comparison.pros' | translate }}</h3>
+    <ul>
+      @for (item of architecture().pros; track item) {
+        <li>{{ item }}</li>
+      }
+    </ul>
+  </section>
+
+  <section>
+    <h3>{{ 'comparison.cons' | translate }}</h3>
+    <ul>
+      @for (item of architecture().cons; track item) {
+        <li>{{ item }}</li>
+      }
+    </ul>
+  </section>
+</div>

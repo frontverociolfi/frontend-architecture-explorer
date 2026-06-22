@@ -1,0 +1,249 @@
+.architecture-list__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
+  gap: 16px;
+  align-items: end;
+}
+
+.sidebar__title {
+  margin: 0;
+  color: var(--color-accent);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.architecture-list__count {
+  margin: 6px 0 0;
+  color: color-mix(in srgb, var(--color-primary) 68%, var(--color-surface));
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.architecture-search {
+  display: grid;
+  gap: 7px;
+}
+
+.architecture-search label {
+  color: color-mix(in srgb, var(--color-primary) 68%, var(--color-surface));
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.architecture-search__control {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  min-height: 42px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-secondary) 38%, var(--color-surface));
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--color-surface) 96%, var(--color-secondary));
+}
+
+.architecture-search__control:focus-within {
+  border-color: color-mix(in srgb, var(--color-primary) 42%, color-mix(in srgb, var(--color-secondary) 38%, var(--color-surface)));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 12%, transparent);
+}
+
+.architecture-search input {
+  min-width: 0;
+  height: 42px;
+  padding: 0 12px;
+  border: 0;
+  color: var(--color-primary);
+  background: transparent;
+  font: inherit;
+  outline: none;
+}
+
+.architecture-search input::placeholder {
+  color: color-mix(in srgb, var(--color-primary) 38%, var(--color-surface));
+}
+
+.architecture-search button {
+  width: 38px;
+  height: 38px;
+  border: 0;
+  color: color-mix(in srgb, var(--color-primary) 68%, var(--color-surface));
+  background: transparent;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.architecture-search button:hover,
+.architecture-search button:focus-visible {
+  color: var(--color-primary);
+  outline: none;
+}
+
+.architecture-accordion {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 10px;
+  border: 1px solid color-mix(in srgb, var(--color-secondary) 38%, var(--color-surface));
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--color-surface) 92%, var(--color-secondary));
+}
+
+.architecture-accordion__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.architecture-accordion__header:hover,
+.architecture-accordion__header:focus-visible {
+  border-color: color-mix(in srgb, var(--color-primary) 34%, transparent);
+  background: color-mix(in srgb, var(--color-surface) 88%, var(--color-secondary));
+  outline: none;
+}
+
+.architecture-accordion__header.expanded {
+  border-color: color-mix(in srgb, var(--color-accent) 36%, transparent);
+  background: color-mix(in srgb, var(--color-surface) 94%, var(--color-secondary));
+}
+
+.architecture-accordion__header h3 {
+  margin: 0 0 5px;
+  font-size: 0.98rem;
+}
+
+.architecture-accordion__header p {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-primary) 68%, var(--color-surface));
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.architecture-accordion__meta {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.architecture-accordion__meta span {
+  min-width: 30px;
+  padding: 5px 8px;
+  border: 1px solid color-mix(in srgb, var(--color-secondary) 38%, var(--color-surface));
+  border-radius: 999px;
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-surface) 88%, var(--color-secondary));
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-align: center;
+}
+
+.architecture-accordion__meta i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  min-height: 24px;
+  border: 1px solid color-mix(in srgb, var(--color-secondary) 38%, var(--color-surface));
+  border-radius: 999px;
+  color: color-mix(in srgb, var(--color-primary) 68%, var(--color-surface));
+  font-size: 0.86rem;
+  font-style: normal;
+  font-weight: 900;
+}
+
+.architecture-nav {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(178px, 1fr));
+  gap: 8px;
+}
+
+.architecture-nav a {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+  min-height: 92px;
+  padding: 13px;
+  border: 1px solid color-mix(in srgb, var(--color-secondary) 22%, var(--color-surface));
+  border-radius: 8px;
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-surface) 98%, var(--color-secondary));
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.architecture-nav a:hover,
+.architecture-nav a:focus-visible,
+.architecture-nav a.active {
+  border-color: color-mix(in srgb, var(--color-accent) 44%, transparent);
+  background: color-mix(in srgb, var(--color-surface) 92%, var(--color-secondary));
+  outline: none;
+}
+
+.architecture-nav a.active {
+  box-shadow: inset 3px 0 0 var(--color-accent);
+}
+
+.architecture-nav strong {
+  font-size: 0.95rem;
+}
+
+.architecture-nav span {
+  color: color-mix(in srgb, var(--color-primary) 68%, var(--color-surface));
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.architecture-empty {
+  margin-top: 2px;
+  padding: 18px;
+  border: 1px dashed color-mix(in srgb, var(--color-secondary) 38%, var(--color-surface));
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--color-surface) 88%, var(--color-secondary));
+}
+
+.architecture-empty h3 {
+  margin: 0 0 8px;
+}
+
+.architecture-empty p {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-primary) 68%, var(--color-surface));
+  line-height: 1.5;
+}
+
+@media (max-width: 780px) {
+  .architecture-list__header {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 640px) {
+  .architecture-accordion {
+    padding: 8px;
+  }
+
+  .architecture-nav {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scroll-snap-type: x proximity;
+  }
+
+  .architecture-nav a {
+    min-width: 220px;
+    scroll-snap-align: start;
+  }
+}
+
+

@@ -1,0 +1,52 @@
+.guidance-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: color-mix(in srgb, var(--color-secondary) 38%, var(--color-surface));
+  border-top: 1px solid color-mix(in srgb, var(--color-secondary) 38%, var(--color-surface));
+}
+
+.guidance-grid section {
+  min-height: 220px;
+  padding: 24px;
+  background: color-mix(in srgb, var(--color-surface) 96%, var(--color-secondary));
+}
+
+h3 {
+  margin-top: 0;
+  margin-bottom: 14px;
+  font-size: 1rem;
+}
+
+ul {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding-left: 20px;
+  color: color-mix(in srgb, var(--color-primary) 68%, var(--color-surface));
+  line-height: 1.55;
+}
+
+li::marker {
+  color: var(--accent);
+}
+
+.real-example p,
+.example-scenario p,
+.common-pitfall p {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-primary) 68%, var(--color-surface));
+  line-height: 1.65;
+}
+
+@media (max-width: 640px) {
+  .guidance-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .guidance-grid section {
+    padding: 18px;
+  }
+}
+
+

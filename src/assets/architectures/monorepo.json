@@ -1,0 +1,88 @@
+{
+  "id": "monorepo",
+  "name": "Monorepo",
+  "shortDescription": "Agrupa várias aplicações e bibliotecas no mesmo repositório.",
+  "explanation": "O monorepo centraliza apps, pacotes compartilhados e ferramentas. Ele favorece consistência, reaproveitamento e mudanças coordenadas entre produtos relacionados.",
+  "files": [
+    { "path": "apps", "name": "apps", "depth": 0, "type": "folder" },
+    { "path": "apps/admin", "name": "admin", "depth": 1, "type": "folder" },
+    {
+      "path": "apps/admin/src/app/app.routes.ts",
+      "name": "app.routes.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "export const routes = [\n  {\n    path: 'customers',\n    loadChildren: () => import('@acme/customer-feature'),\n  },\n];"
+    },
+    {
+      "path": "apps/admin/project.json",
+      "name": "project.json",
+      "depth": 2,
+      "type": "file",
+      "content": "{\n  \"name\": \"admin\",\n  \"targets\": {\n    \"build\": { \"executor\": \"@angular/build:application\" }\n  }\n}"
+    },
+    { "path": "apps/storefront", "name": "storefront", "depth": 1, "type": "folder" },
+    {
+      "path": "apps/storefront/src/app/home.page.ts",
+      "name": "home.page.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "@Component({ templateUrl: './home.page.html' })\nexport class HomePage {\n  products = inject(ProductDataAccess).featured();\n}"
+    },
+    { "path": "apps/docs", "name": "docs", "depth": 1, "type": "folder" },
+    {
+      "path": "apps/docs/src/content/getting-started.md",
+      "name": "getting-started.md",
+      "depth": 2,
+      "type": "file",
+      "content": "# Design System\n\nUse os componentes de `libs/ui` para manter consistência entre aplicações."
+    },
+    { "path": "libs", "name": "libs", "depth": 0, "type": "folder" },
+    { "path": "libs/ui", "name": "ui", "depth": 1, "type": "folder" },
+    {
+      "path": "libs/ui/src/lib/button.component.ts",
+      "name": "button.component.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "@Component({\n  selector: 'acme-button',\n  template: '<button class=\"button\"><ng-content /></button>',\n})\nexport class ButtonComponent {}"
+    },
+    {
+      "path": "libs/ui/src/lib/table.component.ts",
+      "name": "table.component.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "@Component({\n  selector: 'acme-table',\n  templateUrl: './table.component.html',\n})\nexport class TableComponent<T> {\n  rows = input.required<T[]>();\n}"
+    },
+    { "path": "libs/data-access", "name": "data-access", "depth": 1, "type": "folder" },
+    {
+      "path": "libs/data-access/src/lib/http-client.ts",
+      "name": "http-client.ts",
+      "depth": 2,
+      "type": "file",
+      "content": "export function createApiClient(baseUrl: string) {\n  return {\n    get: <T>(path: string) => fetch(`${baseUrl}${path}`).then((r) => r.json() as Promise<T>),\n  };\n}"
+    }
+  ],
+  "pros": [
+    "Facilita compartilhar design system, tipos e utilitários.",
+    "Permite refatorações coordenadas entre apps.",
+    "Padroniza lint, build, testes e versionamento."
+  ],
+  "cons": [
+    "Builds e permissões podem ficar complexos sem boas ferramentas.",
+    "Mudanças globais impactam muitos times.",
+    "Exige governança para evitar acoplamento excessivo."
+  ],
+  "whenToUse": [
+    "Organizações com múltiplos frontends relacionados.",
+    "Produtos que compartilham UI, autenticação, modelos ou SDKs.",
+    "Times que usam ferramentas como Nx, Turborepo ou workspaces."
+  ],
+  "realExample": "Uma empresa SaaS com portal do cliente, admin interno, documentação e pacote de componentes.",
+  "exampleScenario": "O app `admin` e o app `storefront` consomem `libs/ui` para botões e tabelas, e `libs/data-access` para clientes HTTP compartilhados.",
+  "implementationHighlights": [
+    "Separe aplicações em `apps` e bibliotecas reutilizáveis em `libs` ou `packages`.",
+    "Defina regras de dependência entre libs para evitar importações circulares.",
+    "Use cache de build e execução afetada com ferramentas como Nx, Turborepo ou workspaces."
+  ],
+  "commonPitfall": "Compartilhar código demais pode transformar o monorepo em uma aplicação acoplada com vários nomes diferentes.",
+  "accent": "#EE9B00"
+}
