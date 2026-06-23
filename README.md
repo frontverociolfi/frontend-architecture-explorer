@@ -1,59 +1,156 @@
-# FrontendArchitectureExplorer
+# Frontend Architecture Explorer
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.13.
+Projeto educativo em Angular para explorar, comparar e entender diferentes arquiteturas de frontend por meio de conteúdo navegável, mini-IDE interativa e simulador de recomendação.
 
-## Development server
+## O Que Tem Aqui
 
-To start a local development server, run:
+- Guia navegável de arquiteturas frontend.
+- Página real de detalhe por arquitetura.
+- Mini-IDE com árvore de arquivos, busca, abas, caminho completo e copiar código.
+- Comparador lado a lado por critérios como complexidade, escala, autonomia de times, testabilidade, performance e curva de aprendizado.
+- Simulador que recomenda uma arquitetura com base nas respostas do usuário.
+- Internacionalização PT/EN com toggle de idioma.
+- Ícones com `@ng-icons/flag-icons` e `@ng-icons/fluent-ui`.
+- Testes unitários cobrindo serviços e componentes principais.
 
-```bash
-ng serve
+## Arquiteturas Disponíveis
+
+- Feature First
+- Layered
+- Domain Driven Frontend
+- Monorepo
+- Microfrontends
+- Hexagonal
+- Clean
+- CQRS no Frontend
+- Event-Driven Frontend
+- BFF
+- Module Federation
+- Islands Architecture
+- Feature Sliced Design
+
+## Estrutura Do Projeto
+
+```txt
+src/
+├── app/
+├── core/
+│   ├── i18n/
+│   ├── models/
+│   └── services/
+├── shared/
+│   └── components/
+│       └── mini-ide/
+├── features/
+│   ├── advisor/
+│   ├── architecture-detail/
+│   ├── architecture-detail-page/
+│   ├── architecture-guidance/
+│   ├── architecture-home/
+│   ├── architecture-list/
+│   └── comparison/
+└── assets/
+    └── architectures/
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Principais Features
 
-## Code scaffolding
+### Mini-IDE
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+A mini-IDE simula uma navegação por estrutura de arquivos. Ela permite abrir pastas, selecionar arquivos, pesquisar por nome/caminho, manter abas abertas, copiar código e visualizar o caminho completo do arquivo selecionado.
 
-```bash
-ng generate component component-name
+### Simulador
+
+O simulador faz perguntas sobre estágio do produto, divisão de times, regras de negócio, integração, entrega, experiência do usuário e estado da interface. Ao final, recomenda a arquitetura mais adequada e mostra alternativas próximas.
+
+### Comparador
+
+O comparador permite selecionar até 3 arquiteturas e avaliar lado a lado:
+
+- complexidade;
+- escala;
+- autonomia de times;
+- testabilidade;
+- performance;
+- curva de aprendizado.
+
+### Internacionalização
+
+A aplicação possui suporte a português e inglês por meio de uma camada própria de i18n:
+
+```txt
+src/core/i18n/
+├── architecture-translations.ts
+├── i18n-translations.ts
+├── i18n.service.ts
+├── language-toggle.*
+└── translate.pipe.ts
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Rodando Localmente
+
+Instale as dependências:
 
 ```bash
-ng generate --help
+npm install
 ```
 
-## Building
-
-To build the project run:
+Suba o servidor de desenvolvimento:
 
 ```bash
-ng build
+npm start
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+A aplicação abre em:
 
-## Running unit tests
+```txt
+http://localhost:4200
+```
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Scripts
 
 ```bash
-ng test
+npm start
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+Inicia o servidor local com hot reload.
 
 ```bash
-ng e2e
+npm run build
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Gera o build de produção em `dist/`.
 
-## Additional Resources
+```bash
+npm test -- --watch=false
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Executa a suíte unitária uma vez.
+
+## Testes
+
+A suíte cobre:
+
+- `I18nService`;
+- `ArchitectureCatalogService`;
+- `ArchitectureComparisonService`;
+- `ArchitectureList`;
+- `ArchitectureDetail`;
+- `MiniIde`;
+- `AdvisorPage`;
+- `ComparisonPage`;
+- `App`.
+
+## Observação De Build
+
+Atualmente o build passa, mas pode exibir um aviso de budget no SCSS da mini-IDE:
+
+```txt
+src/shared/components/mini-ide/mini-ide.scss exceeded maximum budget
+```
+
+Esse aviso não impede a aplicação de compilar. Ele indica apenas que o arquivo de estilos da mini-IDE está acima do limite configurado no Angular.
+
+## Feito Por
+
+Veronica Ciolfi
