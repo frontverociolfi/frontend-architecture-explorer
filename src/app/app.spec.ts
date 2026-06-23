@@ -6,6 +6,9 @@ import { I18nService } from '../core/i18n/i18n.service';
 
 describe('App', () => {
   beforeEach(async () => {
+    localStorage.clear();
+    document.documentElement.lang = '';
+
     await TestBed.configureTestingModule({
       imports: [App],
       providers: [provideRouter(routes)],
